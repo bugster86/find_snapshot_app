@@ -29,3 +29,14 @@
     shell: echo "{{ inventory_hostname }};{{ app_snap.stdout }}" >> {{ file_resoconto }} 
     delegate_to: localhost
     when: app_snap.stdout != ""
+
+  - name: Invio la mail di resoconto
+    mail:
+                subject: '[ANSIBLE] RESOCONTO DELLE APPLICAZIONI SNAPSHOT DA SANARE'
+                to: "{{ to_mail }}"
+                from: ansible@reitek.com
+                body: "In allegato trovi il file"
+                attach: "{{ file_resoconto }}"
+    delegate_to: localhost
+    run_once: true
+
