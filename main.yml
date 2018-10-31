@@ -19,7 +19,7 @@
   - name: Ricerco le applicazioni SNAPSHOT
     shell: asadmin list-applications | grep -E  "\-[0-9]{8}\." | awk '{print $1}' | paste -sd ";" -
     environment:
-        PATH: "{{ ansible_env.PATH }}:/usr/java/default/bin"
+        PATH: "{{ ansible_env.PATH }}:/usr/java/default/bin:/opt/glassfish/bin/"
     failed_when: false
     changed_when: false
     check_mode: false
