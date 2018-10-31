@@ -28,3 +28,4 @@
   - name: "Scrivo le informazioni sul file di resoconto {{ file_resoconto }}"
     shell: echo "{{ inventory_hostname }};{{ app_snap.stdout }}" >> {{ file_resoconto }} 
     delegate_to: localhost
+    when: app_snap.stdout != ""
