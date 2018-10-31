@@ -1,0 +1,30 @@
+- hosts: "*-ecas*:*-as*"
+  vars:
+    file_resoconto: '/tmp/resoconto_find_snapshot_app.csv'
+
+  tasks:
+
+  - block:
+    - name: "Mi assicuro che il file {{ file_resoconto }} non esista"
+      file:
+        path:  "{{ file_resoconto }}"
+        state: absent
+    - name: "Creo il file  {{ file_resoconto }} vuoto"
+      file:
+        path:  "{{ file_resoconto }}"
+        state: touch
+    delegate_to: localhost
+    run_once: true
+
+  - name: Ricerco le applicazioni SNAPSHOT
+    shell: asadmin list-applications | grep -E  "\-[0-9]{8}\." | awk '{print $1}' | paste -sd ";" -
+    environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/java/default/bin"
+    failed_when: false
+    changed_when: false
+    check_mode: false
+    register: app_snap
+
+  - name: "Scrivo le informazioni sul file di resoconto {{ file_resoconto }}"
+    shell: echo "{{ inventory_hostname }};{{ app_snap.stdout }}" >> {{ file_resoconto }} 
+    delegate_to: localhost
